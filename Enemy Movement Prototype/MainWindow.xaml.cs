@@ -35,6 +35,8 @@ namespace Enemy_Movement_Prototype
             InitializeComponent();
             turtleX = (int)Canvas.GetLeft(turtleBackImage);//sets turtleX to current position on XAML code which is 384
             turtleY = (int)Canvas.GetTop(turtleBackImage);//sets turtleY to XAML value which is 184
+            update.Tick += Update_Tick;//continued from 1, the problem was that multiple events handlers were being stacked leading to the speed increase bug upon reset
+            update.Interval = TimeSpan.FromMilliseconds(1000 / framesPerSecond);
         }
 
         private void startEnemyMovement_Click(object sender, RoutedEventArgs e)
@@ -42,15 +44,15 @@ namespace Enemy_Movement_Prototype
             /* assigns event handler to update timer
              * sets the interval for ticks to occur (about 10 ticks per second)
              * starts timer and disables button to prevent bug where button can be clicked multiple times leading to warp speed
+             * 1. fixed bug by removing event assignment from here and putting on the MainWindow()
              */
-            update.Tick += Update_Tick;
-            update.Interval = TimeSpan.FromMilliseconds(1000 / framesPerSecond);
-            update.Start();
+            update.Start();//start tick intervals
             startEnemyMovementButton.IsEnabled = false;
         }
 
         private void Update_Tick(object sender, EventArgs e)
         {
+            //constantly calls moveTurtle()
             moveTurtle();
         }
 
@@ -58,6 +60,10 @@ namespace Enemy_Movement_Prototype
         {
             turtleX = turtleX + turtleSpeedX;//adds 5 to turtleX
             turtleY = turtleY + turtleSpeedY;//adds 5 to turtleY;
+
+            ///<summary>
+            /// I want the image to bounce when multiple conditions are true which is why I used 4 if's 
+            ///</summary>
             if (turtleX > gameCanvas.Width - turtleBackImage.Width)
             {
                 //if turtleX is greater than 768(second part of condition) will fire and bounce the turtle to the left
