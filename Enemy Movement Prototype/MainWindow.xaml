@@ -28,13 +28,13 @@
                    VerticalAlignment="Center" Width="32" 
                Source="/Resources/Turtle.png" Stretch="None" 
                    RenderTransformOrigin="0.5,0.5" 
-                   Canvas.Top="168" Canvas.Left="0"/>
+                   Canvas.Top="184" Canvas.Left="384"/>
         </Canvas>
 
-        <Button x:Name="startEnemyMovement" Grid.Column="0" Grid.Row="1"
+        <Button x:Name="startEnemyMovementButton" Grid.Column="0" Grid.Row="1"
                 Width="50" Height="50" Content="Move it!"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                RenderTransformOrigin="0.5,0.5">
+                RenderTransformOrigin="0.5,0.5" Click="startEnemyMovement_Click">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -47,6 +47,16 @@
                 <RadialGradientBrush>
                     <GradientStop Color="YellowGreen"/>
                     <GradientStop Color="Purple" Offset="1.25"/>
+                </RadialGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button x:Name="resetButton" Grid.Column="2" Grid.Row="1" Width="50"
+                Height="50" Content="Reset" HorizontalAlignment="Center" 
+                VerticalAlignment="Center" Click="resetButton_Click">
+            <Button.Background>
+                <RadialGradientBrush>
+                    <GradientStop Color="WhiteSmoke" Offset="0"/>
+                    <GradientStop Color="Red" Offset="1.1"/>
                 </RadialGradientBrush>
             </Button.Background>
         </Button>

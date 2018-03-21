@@ -24,16 +24,29 @@ namespace Enemy_Movement_Prototype
     public partial class MainWindow : Window
     {
         private int turtleX;
-        private int turtleSpeedX = 7;
+        private int turtleY;
+        private int turtleSpeedX = 5;//sets x speed value
+        private int turtleSpeedY = 5;//sets y speed value
+        private DispatcherTimer update = new DispatcherTimer();//ensures the game constantly refreshes to ensure game is alive!
+        private int framesPerSecond = 90;//this is how you can see the illusion of motion
+    
         public MainWindow()
         {
             InitializeComponent();
-            turtleX = (int)Canvas.GetLeft(turtleBackImage);//sets turtleX to current position on XAML code which is 0
-            int framesPerSecond = 90;
-            DispatcherTimer update = new DispatcherTimer();           
+            turtleX = (int)Canvas.GetLeft(turtleBackImage);//sets turtleX to current position on XAML code which is 384
+            turtleY = (int)Canvas.GetTop(turtleBackImage);//sets turtleY to XAML value which is 184
+        }
+
+        private void startEnemyMovement_Click(object sender, RoutedEventArgs e)
+        {
+            /* assigns event handler to update timer
+             * sets the interval for ticks to occur (about 10 ticks per second)
+             * starts timer and disables button to prevent bug where button can be clicked multiple times leading to warp speed
+             */
             update.Tick += Update_Tick;
-            update.Interval = TimeSpan.FromMilliseconds(1000 / framesPerSecond);    
+            update.Interval = TimeSpan.FromMilliseconds(1000 / framesPerSecond);
             update.Start();
+            startEnemyMovementButton.IsEnabled = false;
         }
 
         private void Update_Tick(object sender, EventArgs e)
@@ -44,15 +57,39 @@ namespace Enemy_Movement_Prototype
         private void moveTurtle()
         {
             turtleX = turtleX + turtleSpeedX;//adds 5 to turtleX
-            if (turtleX > gameCanvas.Width - turtleBackImage.Width)//if turtleX is greater than 768(second part of condition) will fire
+            turtleY = turtleY + turtleSpeedY;//adds 5 to turtleY;
+            if (turtleX > gameCanvas.Width - turtleBackImage.Width)
             {
+                //if turtleX is greater than 768(second part of condition) will fire and bounce the turtle to the left
                 turtleSpeedX *= -1;
             }
             if (turtleX < 0)
             {
+                //when fire will return the turtle to the right
                 turtleSpeedX *= -1;
             }
+            if (turtleY > gameCanvas.Height - turtleBackImage.Height)
+            {
+                //turn turtleY to a negative when it reaches the bottom
+                turtleSpeedY *= -1;
+            }
+            if (turtleY < 0)
+            {
+                //turn turtleY to a negative when it reaches the top
+                turtleSpeedY *= -1;
+            }
             Canvas.SetLeft(turtleBackImage, turtleX);//sets X coordinate for turtle image
+            Canvas.SetTop(turtleBackImage, turtleY);//sets Y coordinate for turtle image
+        }
+       
+        private void resetButton_Click(object sender, RoutedEventArgs e)
+        {
+            update.Stop();
+            Canvas.SetLeft(turtleBackImage, (gameCanvas.Width / 2) - 16);
+            Canvas.SetTop(turtleBackImage, (gameCanvas.Height / 2) - 16);
+            turtleX = (int)Canvas.GetLeft(turtleBackImage);//resets turtleX to XAML value which is 384
+            turtleY = (int)Canvas.GetTop(turtleBackImage);//resets turtleY to XAML value which is 184 
+            startEnemyMovementButton.IsEnabled = true;
         }
     }
 }
